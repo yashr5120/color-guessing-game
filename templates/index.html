@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium color guessing experience. Test your visual perception.">
+    <title>Chroma | Visual Perception Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="noise-overlay"></div>
+    <div id="ambient-light-1" class="ambient-light"></div>
+    <div id="ambient-light-2" class="ambient-light"></div>
+
+    <div id="dynamic-bg" class="dynamic-bg"></div>
+
+    <!-- Navigation/Header -->
+    <header class="app-header">
+        <div class="logo">CHROMA<span class="dot">.</span></div>
+        <div class="stats-pill">
+            <span class="streak-icon">🔥</span>
+            <span id="streak-counter">0</span>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- Phase 0: Landing / Hero -->
+        <section id="phase-landing" class="phase active">
+            <div class="hero-content">
+                <div class="badge">Train your Brain</div>
+                <h1 class="hero-title">Perfect your <br><span class="gradient-text">color perception.</span></h1>
+                <p class="hero-subtitle">Memorize the exact hue, saturation, and luminance. Recreate it with precision. A premium visual challenge.</p>
+                <button id="btn-start" class="btn-primary magnetic">
+                    <span class="btn-text">Begin Challenge</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </div>
+            <div class="hero-visual">
+                <div class="glass-card demo-card">
+                    <div class="demo-color"></div>
+                    <div class="demo-sliders">
+                        <div class="demo-track"></div>
+                        <div class="demo-track"></div>
+                        <div class="demo-track"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 1: Memorize -->
+        <section id="phase-memorize" class="phase">
+            <div class="fullscreen-color" id="target-color-display"></div>
+            <div class="countdown-container">
+                <div id="countdown-number" class="countdown-text">5</div>
+                <div class="countdown-label">Memorize this exact color</div>
+            </div>
+        </section>
+
+        <!-- Phase 2: Guessing -->
+        <section id="phase-guess" class="phase">
+            <div class="guess-container">
+                <div class="instruction-fade">Recreate the color</div>
+                
+                <div class="glass-panel main-controls">
+                    <div class="sliders-container">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label>Hue</label>
+                                <span class="value-display" id="val-h">180&deg;</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <input type="range" id="slider-h" class="premium-slider slider-hue" min="0" max="360" value="180">
+                            </div>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label>Saturation</label>
+                                <span class="value-display" id="val-s">50%</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <input type="range" id="slider-s" class="premium-slider slider-sat" min="0" max="100" value="50">
+                            </div>
+                        </div>
+
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <label>Luminance</label>
+                                <span class="value-display" id="val-l">50%</span>
+                            </div>
+                            <div class="slider-wrapper">
+                                <input type="range" id="slider-l" class="premium-slider slider-lum" min="0" max="100" value="50">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-submit" class="btn-submit">
+                        <span>Confirm Color</span>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3: Result -->
+        <section id="phase-result" class="phase">
+            <div class="result-container">
+                <div class="result-left">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="score-content">
+                            <span id="final-score">0</span>
+                            <span class="score-symbol">%</span>
+                        </div>
+                    </div>
+                    <h2 id="feedback-heading" class="feedback-text">Evaluating...</h2>
+                    <p id="feedback-subtext" class="feedback-subtext">Calculating perceptual distance</p>
+                </div>
+
+                <div class="result-right">
+                    <div class="comparison-cards">
+                        <div class="comp-card">
+                            <div class="comp-color" id="result-target-color"></div>
+                            <div class="comp-label">Target Color</div>
+                        </div>
+                        <div class="comp-card">
+                            <div class="comp-color" id="result-guess-color"></div>
+                            <div class="comp-label">Your Guess</div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="btn-replay" class="btn-secondary">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
