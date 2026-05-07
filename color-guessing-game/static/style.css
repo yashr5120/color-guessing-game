@@ -99,6 +99,9 @@ body {
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.05em;
+    background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .logo .dot {
@@ -248,7 +251,13 @@ body {
 .demo-color {
     flex: 1;
     border-radius: 16px;
-    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+    background: linear-gradient(135deg, #ff0000, #ff00ff);
+    animation: rainbow-bg 8s linear infinite;
+}
+
+@keyframes rainbow-bg {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
 }
 
 .demo-track {
@@ -270,11 +279,12 @@ body {
 }
 
 .countdown-container {
-    position: relative;
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
     z-index: 2;
-    text-align: center;
-    mix-blend-mode: difference;
-    color: white;
+    text-align: right;
+    transition: color 0.3s;
 }
 
 .countdown-text {
@@ -294,6 +304,8 @@ body {
 /* Guess Phase */
 #phase-guess {
     flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 2rem;
 }
 
 .guess-container {
@@ -305,7 +317,7 @@ body {
 
 .instruction-fade {
     font-size: 1.2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     color: rgba(255,255,255,0.7);
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -316,11 +328,9 @@ body {
     max-width: 540px;
     padding: 2.5rem;
     border-radius: 32px;
-    background: rgba(10, 10, 10, 0.4);
-    border: 1px solid rgba(255,255,255,0.05);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 .color-preview-container {
@@ -474,44 +484,56 @@ input[type=range].premium-slider:hover::-webkit-slider-thumb {
 
 /* Result Phase */
 .result-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.result-left {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
+.result-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .score-circle {
-    position: relative;
-    width: 200px;
-    height: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 .circular-chart {
     display: block;
-    margin: 0 auto;
-    max-width: 100%;
-    max-height: 250px;
+    width: 120px;
+    height: 120px;
 }
 
 .circle-bg {
     fill: none;
     stroke: rgba(255, 255, 255, 0.05);
-    stroke-width: 1.5;
+    stroke-width: 2.5;
 }
 
 .circle {
     fill: none;
-    stroke-width: 1.5;
+    stroke-width: 2.5;
     stroke-linecap: round;
     transition: stroke-dasharray 1s ease-out;
 }
 
 .score-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     align-items: baseline;
 }

@@ -91,6 +91,8 @@ function transitionTo(phaseId, onComplete) {
 function startGame() {
     // Hide ambient lights for focus
     gsap.to('.ambient-light', { opacity: 0, duration: 1 });
+    
+    els.displays.dynamicBg.style.background = 'transparent';
 
     // Generate Target
     state.targetH = Math.floor(Math.random() * 360);
@@ -107,6 +109,16 @@ function startGame() {
     // Prepare memorize phase
     els.displays.targetFullscreen.style.background = `hsl(${state.targetH}, ${state.targetS}%, ${state.targetL}%)`;
     els.displays.targetFullscreen.style.opacity = 0;
+
+    // Adjust countdown text color based on target color luminance
+    const [r, g, b] = hslToRgb(state.targetH, state.targetS, state.targetL);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+    const countdownContainer = document.querySelector('.countdown-container');
+    if (luminance > 150) {
+        countdownContainer.style.color = '#000000'; // Dark text for light background
+    } else {
+        countdownContainer.style.color = '#ffffff'; // Light text for dark background
+    }
 
     transitionTo('memorize', () => {
         // Flood screen
@@ -128,6 +140,9 @@ function startGame() {
                 els.displays.countdownNum.innerText = count;
             } else {
                 clearInterval(countdownInterval);
+                // Pre-set the guessing phase background so the target color fades smoothly into it
+                els.displays.dynamicBg.style.background = `hsl(${state.guessH}, ${state.guessS}%, ${state.guessL}%)`;
+                
                 // Hide color and transition to guess
                 gsap.to(els.displays.targetFullscreen, { 
                     opacity: 0, 
@@ -140,6 +155,9 @@ function startGame() {
 }
 
 function initGuessPhase() {
+    // Flood background with the guess color
+    els.displays.dynamicBg.style.background = `hsl(${state.guessH}, ${state.guessS}%, ${state.guessL}%)`;
+
     // Animate card entrance if needed
     gsap.fromTo('.main-controls', 
         { scale: 0.95, opacity: 0 },
@@ -157,12 +175,11 @@ function updatePreview() {
     els.values.l.innerText = `${state.guessL}%`;
 
     const currentColor = `hsl(${state.guessH}, ${state.guessS}%, ${state.guessL}%)`;
-    
-    // Update live preview bubble
-    els.displays.livePreview.style.background = currentColor;
 
-    // Update dynamic background with a dark radial gradient using the color
-    els.displays.dynamicBg.style.background = `radial-gradient(circle at center, hsla(${state.guessH}, ${state.guessS}%, ${state.guessL}%, 0.15) 0%, var(--bg-base) 100%)`;
+    // Update dynamic background with the full color for guessing phase
+    if (els.phases.guess.classList.contains('active')) {
+        els.displays.dynamicBg.style.background = currentColor;
+    }
 
     // Update slider track backgrounds for S and L
     updateSliderTracks(state.guessH, state.guessS, state.guessL);
@@ -234,6 +251,9 @@ function submitGuess() {
     // Circle SVG Color
     els.displays.circleProgress.style.stroke = color;
 
+    // Reset background to black for result phase
+    els.displays.dynamicBg.style.background = 'transparent';
+
     transitionTo('result', () => {
         // Animate Score Counter
         let dummy = { val: 0 };
@@ -260,7 +280,10 @@ function submitGuess() {
 // Event Listeners
 els.btns.start.addEventListener('click', startGame);
 els.btns.submit.addEventListener('click', submitGuess);
-els.btns.replay.addEventListener('click', startGame);
+els.btns.replay.addEventListener('click', () => {
+    els.displays.dynamicBg.style.background = 'transparent';
+    startGame();
+});
 
 ['h', 's', 'l'].forEach(key => {
     els.sliders[key].addEventListener('input', updatePreview);
@@ -289,6 +312,8 @@ magnetBtn.addEventListener('mouseleave', () => {
 window.addEventListener('DOMContentLoaded', () => {
     // Initial Preview setup
     updatePreview();
+    // Reset background to black for landing phase
+    els.displays.dynamicBg.style.background = 'transparent';
     
     gsap.fromTo('.hero-title', 
         { y: 50, opacity: 0 }, 

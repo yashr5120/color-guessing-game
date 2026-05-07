@@ -32,7 +32,7 @@
         <!-- Phase 0: Landing / Hero -->
         <section id="phase-landing" class="phase active">
             <div class="hero-content">
-                <div class="badge">AI-Powered Experience</div>
+                <div class="badge">Train your Brain</div>
                 <h1 class="hero-title">Perfect your <br><span class="gradient-text">color perception.</span></h1>
                 <p class="hero-subtitle">Memorize the exact hue, saturation, and luminance. Recreate it with precision. A premium visual challenge.</p>
                 <button id="btn-start" class="btn-primary magnetic">
@@ -67,11 +67,6 @@
                 <div class="instruction-fade">Recreate the color</div>
                 
                 <div class="glass-panel main-controls">
-                    <div class="color-preview-container">
-                        <div id="live-preview" class="live-preview"></div>
-                        <div class="preview-rings"></div>
-                    </div>
-
                     <div class="sliders-container">
                         <div class="slider-group">
                             <div class="slider-header">
@@ -115,33 +110,35 @@
         <!-- Phase 3: Result -->
         <section id="phase-result" class="phase">
             <div class="result-container">
-                <div class="score-circle">
-                    <svg viewBox="0 0 100 100" class="circular-chart">
-                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <div class="score-content">
-                        <span id="final-score">0</span>
-                        <span class="score-symbol">%</span>
+                <div class="result-left">
+                    <div class="score-circle">
+                        <svg viewBox="0 0 36 36" class="circular-chart">
+                            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <path class="circle" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="score-content">
+                            <span id="final-score">0</span>
+                            <span class="score-symbol">%</span>
+                        </div>
                     </div>
+                    <h2 id="feedback-heading" class="feedback-text">Evaluating...</h2>
+                    <p id="feedback-subtext" class="feedback-subtext">Calculating perceptual distance</p>
                 </div>
 
-                <h2 id="feedback-heading" class="feedback-text">Evaluating...</h2>
-                <p id="feedback-subtext" class="feedback-subtext">Calculating perceptual distance</p>
-
-                <div class="comparison-cards">
-                    <div class="comp-card">
-                        <div class="comp-color" id="result-target-color"></div>
-                        <div class="comp-label">Target Color</div>
+                <div class="result-right">
+                    <div class="comparison-cards">
+                        <div class="comp-card">
+                            <div class="comp-color" id="result-target-color"></div>
+                            <div class="comp-label">Target Color</div>
+                        </div>
+                        <div class="comp-card">
+                            <div class="comp-color" id="result-guess-color"></div>
+                            <div class="comp-label">Your Guess</div>
+                        </div>
                     </div>
-                    <div class="comp-card">
-                        <div class="comp-color" id="result-guess-color"></div>
-                        <div class="comp-label">Your Guess</div>
+                    <div class="action-buttons">
+                        <button id="btn-replay" class="btn-secondary">Play Again</button>
                     </div>
-                </div>
-
-                <div class="action-buttons">
-                    <button id="btn-replay" class="btn-secondary">Play Again</button>
                 </div>
             </div>
         </section>
